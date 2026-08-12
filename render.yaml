@@ -1,0 +1,28 @@
+# Render Blueprint — https://render.com/docs/blueprint-spec
+# Déploiement : Render > New > Blueprint > sélectionner ce repo.
+# NB (plan gratuit) : le disque est éphémère. La base SQLite et les fichiers
+# uploadés sont recréés à partir du seed à chaque déploiement. La photo et le CV
+# sont figés dans /public pour survivre. Le service s'endort après ~15 min
+# d'inactivité et redémarre à froid (~30-60 s) à la visite suivante.
+services:
+  - type: web
+    name: portfolio-samuel
+    runtime: node
+    plan: free
+    region: frankfurt
+    branch: main
+    # NODE_ENV n'est PAS mis en variable globale, sinon `npm install` sauterait
+    # les devDependencies (vite, prisma, tsx, esbuild) nécessaires au build.
+    buildCommand: npm install && npm run prisma:generate && npm run prisma:push && npm run db:seed && npm run build
+    startCommand: NODE_ENV=production npm run start
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: DATABASE_URL
+        value: file:./dev.db
+      - key: JWT_SECRET
+        generateValue: true          # Render génère un secret fort
+      - key: ADMIN_EMAIL
+        value: hariniainasamuelandrianirina@gmail.com
+      - key: ADMIN_PASSWORD
+        sync: false                   # à saisir dans le dashboard (secret)

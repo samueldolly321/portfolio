@@ -1,0 +1,169 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@layer base {
+  :root, html.dark {
+    --bg-main: #12010c;
+    --bg-surface: #180312;
+    --bg-card: #22071d;
+    --bg-card-hover: #2a0a24;
+    --text-main: #ffffff;
+    --text-muted: #bba1b5;
+    --color-primary: #ec4899;
+    --color-secondary: #f38038;
+    --color-accent: #f43f5e;
+    --color-border: #3d0d34;
+
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  }
+
+  html.light {
+    --bg-main: #fbf0f7;
+    --bg-surface: #ffffff;
+    --bg-card: #f6e3f2;
+    --bg-card-hover: #eed2e8;
+    --text-main: #22031a;
+    --text-muted: #6e4663;
+    --color-primary: #db2777;
+    --color-secondary: #ea580c;
+    --color-accent: #e11d48;
+    --color-border: #e0b8d7;
+  }
+
+  body {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6, .font-heading {
+    font-family: 'Plus Jakarta Sans', 'Space Grotesk', system-ui, sans-serif;
+  }
+
+  code, pre, .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+/* Custom Theme Utilities */
+.bg-theme-main { background-color: var(--bg-main); }
+.bg-theme-surface { background-color: var(--bg-surface); }
+.bg-theme-card { background-color: var(--bg-card); }
+.text-theme-main { color: var(--text-main); }
+.text-theme-muted { color: var(--text-muted); }
+.text-theme-primary { color: var(--color-primary); }
+.text-theme-secondary { color: var(--color-secondary); }
+.text-theme-accent { color: var(--color-accent); }
+.border-theme { border-color: var(--color-border); }
+
+/* Custom Gradient Button & Text Utilities */
+.bg-gradient-mockup {
+  position: relative;
+  isolation: isolate;
+  background: linear-gradient(135deg, #d92672 0%, #f38038 100%);
+}
+/* Hover/active gradient fades in smoothly via an overlay (gradients can't be
+   transitioned directly in CSS, so we animate the overlay's opacity). */
+.bg-gradient-mockup::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: linear-gradient(270deg, #d92672 0%, #f38038 100%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.bg-gradient-mockup:hover::after,
+.bg-gradient-mockup:active::after {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-gradient-mockup::after {
+    transition: none;
+  }
+}
+
+.text-gradient-mockup {
+  background: linear-gradient(135deg, #ec4899 0%, #f43f5e 40%, #f97316 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Prevent horizontal scroll caused by reveal translate animations */
+body {
+  overflow-x: hidden;
+}
+
+/* Scroll-reveal fade-in animations (left / right / top / up) */
+.reveal {
+  opacity: 0;
+  transition: opacity 0.7s ease, transform 0.7s ease;
+  will-change: opacity, transform;
+}
+.reveal-left {
+  transform: translateX(-48px);
+}
+.reveal-right {
+  transform: translateX(48px);
+}
+.reveal-top {
+  transform: translateY(-48px);
+}
+.reveal-up {
+  transform: translateY(48px);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* Section heading gradient (purple -> pink) */
+.text-gradient-h2 {
+  background-image: linear-gradient(to right, #8b2b9e, #d73f73);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  width: fit-content;
+}
+
+.plum-glow {
+  box-shadow: 0 0 30px rgba(217, 38, 114, 0.2);
+}
+
+.plum-border-glow:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.25);
+}
+
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-main);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary);
+}

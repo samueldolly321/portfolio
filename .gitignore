@@ -1,0 +1,15 @@
+node_modules/
+build/
+dist/
+coverage/
+.DS_Store
+*.log
+.env*
+!.env.example
+
+# Database (SQLite) & uploaded media
+*.db
+*.db-journal
+dev.db
+prisma/dev.db
+uploads/
