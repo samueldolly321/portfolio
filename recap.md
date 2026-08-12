@@ -170,3 +170,32 @@ portfolio/
 **Keep-alive (anti mise en veille) :** un cron sur **cron-job.org** appelle `https://portfolio-samuel-u5rg.onrender.com/api/health` toutes les **10 min** (timeout 30 s) → le service reste éveillé, plus de page blanche au réveil.
 
 **Passer en persistant plus tard** (si besoin) : instance payante + disque monté (SQLite + uploads), ou PostgreSQL (Render Postgres) + stockage objet (S3/Cloudinary) pour les fichiers.
+
+**Nom de domaine :** on garde l'URL `onrender.com` pour l'instant. Côté Render, un domaine perso
+est **gratuit** (2 domaines + HTTPS auto inclus dans le plan gratuit) ; seul l'**achat du nom**
+est payant (~10-15 €/an). Le sous-domaine `onrender.com` d'un service **ne peut pas être renommé**
+(il faudrait recréer le service). Un domaine perso pourra être ajouté plus tard sans rien casser.
+
+---
+
+## 9. Documentation & apprentissage
+
+Le repo contient une petite **formation full-stack** basée sur ce projet, pour progresser en
+développement web (surtout backend) :
+
+- **`INSTALLATION.md`** — installer le projet sur un autre PC (USB ou GitHub), A→Z (outils,
+  commandes, `.env`, dépannage). Rappel : base **SQLite**, aucun serveur de base à installer.
+- **`TUTORIEL.md`** — comprendre toute l'architecture : vocabulaire, backend en profondeur
+  (Express, routes, Prisma, JWT, uploads, seed), frontend React (hooks, contextes, routage), cycle
+  complet d'une fonctionnalité, feuille de route pour créer ses propres sites.
+- **Exercices guidés** (avec solutions inline + points de contrôle) :
+  - `EXERCICE-01-ajouter-une-section.md` — créer une section full-stack (Témoignages) de A→Z.
+  - `EXERCICE-02-crud-admin.md` — la rendre **administrable** (CRUD protégé par JWT).
+  - `EXERCICE-03-brancher-competences.md` — brancher la section **Compétences** (codée en dur) sur
+    la base (refactor).
+  - `EXERCICE-04-recherche-filtre.md` — ajouter **recherche + filtre** aux Projets (frontend, `useMemo`).
+
+**Branche `solutions`** (`git checkout solutions`) — le **corrigé exécutable** : les 4 exercices
+réellement appliqués et vérifiés (build + types + API OK). Voir `SOLUTIONS.md` sur cette branche.
+Comparer avec : `git diff main solutions`. La branche `main` (et le site en ligne) n'est pas
+affectée — Render ne déploie que `main`.
