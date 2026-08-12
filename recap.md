@@ -37,11 +37,11 @@ Autres scripts : `npm run build` (production), `npm run start` (prod), `npm run 
 
 ## 3. Sections du site public
 
-1. **Hero** — titre, badge, CTA, technologies, photo (fondu gauche/droite)
-2. **À Propos** — 2 paragraphes côte à côte + 3 chiffres clés + bouton **Télécharger mon CV**
+1. **Hero** — titre, CTA, technologies, photo (fondu gauche/droite)
+2. **À Propos** — 2 paragraphes côte à côte + 3 chiffres clés animés + bouton **Télécharger mon CV**
 3. **Compétences Techniques** — 4 colonnes : Front-end, Back-end, Data & Outils, Design
-4. **Expérience Professionnelle** — timeline
-5. **Formation** — cartes
+4. **Expériences Professionnelles** — timeline (stack en évidence)
+5. **Formations** — cartes (établissement en évidence)
 6. **Projets Récents** — 6 projets (cartes cliquables + modale détail)
 7. **Contact** — coordonnées + formulaire fonctionnel
 8. **Footer**
@@ -102,6 +102,17 @@ Accessible sur `/admin`. Sections gérables :
 - **Responsive navbar** : entre `md` et `lg` (~840px), police du menu réduite (`text-sm`) + menu centré prenant l'espace disponible (`flex-1`, wrap possible) → reste propre sur une ligne.
 - **Photo** : conservée telle quelle (déjà en haute résolution **1254×1254**).
 
+### Boutons, favicon & correctifs
+- **Boutons dégradés** : au survol/clic, plus d'effet `scale` ; le fond passe au dégradé `270deg` via un overlay `::after` animé en opacité (**fondu doux 0,4 s**, `.bg-gradient-mockup` dans `index.css`). Respecte `prefers-reduced-motion`.
+- **Favicon** : pack complet dans `public/` — `favicon.svg` (monogramme « S » + chevrons, dégradé marque), `favicon.ico` (16/32/48), `favicon-96x96.png`, `apple-touch-icon.png` (180), `web-app-manifest-192/512.png`, `site.webmanifest`. Référencés dans `index.html` (+ `theme-color`).
+- **Correctif édition de projet** : la route `GET /api/projects/:idOrSlug` résout par **id ou slug** (`findFirst` + `OR`) → le formulaire d'édition admin est bien **pré-rempli** (avant : recherche par slug uniquement → 404 → champs vides).
+- **Dev** : script `dev` passé à **`tsx watch server.ts`** → le serveur se recharge tout seul à chaque modif backend.
+
+### Gel du contenu dans le seed (pour l'hébergement gratuit)
+- Tout le contenu réel (profil, hero, à propos, **6 projets** avec vraies URLs/années/images) est **figé dans `prisma/seed.ts`**.
+- Images de projets figées dans `public/` (`project-*.jpg`), photo et CV aussi → **plus aucune dépendance au dossier éphémère `/uploads/`** en ligne.
+- Conséquence : le **seed est la source de vérité**. Pour changer le contenu → éditer le code/seed puis `git push` (redéploie automatiquement).
+
 ---
 
 ## 6. Points à connaître / pistes d'amélioration
@@ -137,25 +148,25 @@ portfolio/
 
 ---
 
-## 8. Mise en ligne (Render — plan gratuit)
+## 8. Mise en ligne (Render — plan gratuit) — ✅ EN LIGNE
 
-**Repo GitHub :** https://github.com/samueldolly321/portfolio (branche `main`).
+- **Site en ligne** : **https://portfolio-samuel-u5rg.onrender.com/** (admin : `/admin/user`).
+- **Repo GitHub** : https://github.com/samueldolly321/portfolio (branche `main`).
+- **Service Render** : `portfolio-samuel` (Blueprint `samuel-portfolio`).
 
 **Config prête dans le repo :**
 - `render.yaml` (Blueprint) : build = `npm install && prisma generate && prisma db push && db:seed && build` ; start = `NODE_ENV=production npm run start`.
 - `server.ts` écoute sur `process.env.PORT` (imposé par Render) et `0.0.0.0`.
-- Photo (`public/samuel-andrianirina.png`) et CV (`public/cv-andrianirina-hariniaina-samuel.pdf`) **figés dans `/public`** + pointés par le seed → survivent aux redéploiements.
+- Photo, CV et images de projets **figés dans `/public`** + pointés par le seed → présents en ligne malgré le stockage éphémère.
 
-**Déployer :**
-1. https://dashboard.render.com → se connecter avec GitHub.
-2. **New → Blueprint** → sélectionner le repo `portfolio` → Render lit `render.yaml`.
-3. Renseigner `ADMIN_PASSWORD` (variable `sync:false`) → `mdpportfolio123`. `JWT_SECRET` est généré automatiquement.
-4. **Apply** → build + déploiement (~3-5 min au 1er déploiement).
-5. Site en ligne : `https://portfolio-samuel.onrender.com` ; admin : `/admin/user`.
+**Variables d'environnement (dashboard Render) :** `DATABASE_URL=file:./dev.db`, `JWT_SECRET` (généré), `ADMIN_EMAIL`, `ADMIN_PASSWORD=mdpportfolio123`. Le `PORT` est fourni par Render.
+
+**Mettre à jour le site en ligne :** modifier le code / `prisma/seed.ts` → `git push` sur `main` → Render redéploie automatiquement (`autoDeploy: true`, ~2-3 min ; bref « Not Found » pendant le build, normal).
 
 **Caractéristiques du plan gratuit :**
-- ⚠️ **Stockage éphémère** : base + uploads réinitialisés au **seed** à chaque redéploiement. Les modifs faites via l'admin **en ligne** et les messages de contact sont perdus au redéploiement. → Pour un contenu permanent, modifier `prisma/seed.ts` puis `git push`.
-- 💤 Le service **s'endort** après ~15 min d'inactivité ; réveil à froid ~30-60 s à la visite suivante.
-- 🔄 `autoDeploy: true` : chaque `git push` sur `main` redéploie automatiquement.
+- ⚠️ **Stockage éphémère** : base + uploads réinitialisés au **seed** à chaque redéploiement (les modifs faites via l'admin *en ligne* et les messages de contact ne sont pas permanents). → Source de vérité = le seed.
+- 💤 **Mise en veille** après ~15 min d'inactivité ; réveil à froid ~30-60 s.
 
-**Passer en persistant plus tard** (si besoin) : upgrade en instance payante + disque monté (SQLite + uploads), ou bascule vers PostgreSQL (Render Postgres) + stockage objet (S3/Cloudinary) pour les fichiers.
+**Keep-alive (anti mise en veille) :** un cron sur **cron-job.org** appelle `https://portfolio-samuel-u5rg.onrender.com/api/health` toutes les **10 min** (timeout 30 s) → le service reste éveillé, plus de page blanche au réveil.
+
+**Passer en persistant plus tard** (si besoin) : instance payante + disque monté (SQLite + uploads), ou PostgreSQL (Render Postgres) + stockage objet (S3/Cloudinary) pour les fichiers.
