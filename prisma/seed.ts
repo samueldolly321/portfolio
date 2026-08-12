@@ -375,6 +375,40 @@ async function main() {
     console.log('✅ Projects seeded');
   }
 
+  // 10. Testimonials
+  const testimonialCount = await prisma.testimonial.count();
+  if (testimonialCount === 0) {
+    await prisma.testimonial.createMany({
+      data: [
+        {
+          author: 'Jean Rakoto',
+          role: 'Chef de projet',
+          company: 'Cliken-web',
+          message: "Samuel livre un travail soigné et fiable. Il comprend le besoin métier et propose toujours des solutions pertinentes.",
+          rating: 5,
+          sortOrder: 1,
+        },
+        {
+          author: 'Marie Rasoa',
+          role: 'Fondatrice',
+          company: 'Startup locale',
+          message: "Réactif, rigoureux et de bon conseil. Notre application a été livrée dans les temps et sans accroc.",
+          rating: 5,
+          sortOrder: 2,
+        },
+        {
+          author: 'Paul Andria',
+          role: 'CTO',
+          company: 'Agence web',
+          message: "Un vrai développeur full-stack : à l'aise du front au back, jusqu'à la mise en production.",
+          rating: 4,
+          sortOrder: 3,
+        },
+      ],
+    });
+    console.log('✅ Testimonials seeded');
+  }
+
   console.log('🎉 Database seeding completed successfully!');
 }
 

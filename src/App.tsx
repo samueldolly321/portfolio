@@ -20,6 +20,7 @@ import { AdminProjects } from './pages/admin/AdminProjects';
 import { AdminProjectEdit } from './pages/admin/AdminProjectEdit';
 import { AdminMedia } from './pages/admin/AdminMedia';
 import { AdminMessages } from './pages/admin/AdminMessages';
+import { AdminTestimonials } from './pages/admin/AdminTestimonials';
 
 export const App: React.FC = () => {
   return (
@@ -49,6 +50,7 @@ export const App: React.FC = () => {
                   <Route path="projects/edit/:id" element={<AdminProjectEdit />} />
                   <Route path="media" element={<AdminMedia />} />
                   <Route path="messages" element={<AdminMessages />} />
+                  <Route path="testimonials" element={<AdminTestimonials />} />
                 </Route>
               </Route>
 

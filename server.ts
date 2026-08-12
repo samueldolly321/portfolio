@@ -16,6 +16,7 @@ import uploadsRoutes from './server/src/routes/uploads.js';
 import contactRoutes from './server/src/routes/contact.js';
 import messagesRoutes from './server/src/routes/messages.js';
 import dashboardRoutes from './server/src/routes/dashboard.js';
+import testimonialsRoutes from './server/src/routes/testimonials.js';
 
 async function startServer() {
   const app = express();
@@ -49,6 +50,7 @@ async function startServer() {
   app.use('/api/contact', contactRoutes);
   app.use('/api/messages', messagesRoutes);
   app.use('/api/admin/dashboard', dashboardRoutes);
+  app.use('/api/testimonials', testimonialsRoutes);
 
   // Vite middleware in development mode
   if (process.env.NODE_ENV !== 'production') {

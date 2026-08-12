@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Project } from '../types';
 import { ProjectModal } from '../components/ProjectModal';
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, Search, X } from 'lucide-react';
 import { Reveal } from '../components/Reveal';
 
 // Themed placeholder used when a project has no image or the image fails to load.
@@ -132,6 +132,33 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects }) =>
 
   const displayList = projects && projects.length > 0 ? projects : mockupProjects;
 
+  // Recherche + filtre par catégorie (côté client)
+  const [search, setSearch] = useState('');
+  const [activeCategory, setActiveCategory] = useState('Tous');
+
+  const categories = useMemo(() => {
+    const uniques = new Set(displayList.map((p) => p.category).filter(Boolean));
+    return ['Tous', ...Array.from(uniques)];
+  }, [displayList]);
+
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return displayList.filter((p) => {
+      const matchCategory = activeCategory === 'Tous' || p.category === activeCategory;
+      if (!q) return matchCategory;
+      const haystack = [
+        p.title,
+        p.shortDescription,
+        p.description,
+        (p.technologies || []).join(' '),
+        p.category,
+      ]
+        .join(' ')
+        .toLowerCase();
+      return matchCategory && haystack.includes(q);
+    });
+  }, [displayList, search, activeCategory]);
+
   return (
     <section id="projects" className="py-24 bg-theme-main relative transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -147,9 +174,50 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects }) =>
           </div>
         </Reveal>
 
-        {/* 6 Cards Grid (3 columns x 2 rows) matching Mockup */}
+        {/* Barre de recherche + filtres par catégorie */}
+        <div className="flex flex-col md:flex-row md:items-center gap-4 mb-8">
+          <div className="relative flex-1 max-w-md">
+            <Search className="w-4 h-4 text-theme-muted absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Rechercher un projet, une techno..."
+              className="w-full pl-10 pr-9 py-2.5 rounded-xl bg-theme-card border border-theme text-theme-main text-sm focus:outline-none focus:border-[#f38038] transition-colors"
+            />
+            {search && (
+              <button
+                type="button"
+                onClick={() => setSearch('')}
+                aria-label="Effacer la recherche"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-theme-muted hover:text-theme-main"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                type="button"
+                onClick={() => setActiveCategory(cat)}
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold border transition-colors ${
+                  activeCategory === cat
+                    ? 'bg-gradient-mockup text-white border-transparent'
+                    : 'bg-theme-card text-theme-muted border-theme hover:border-[#f38038]'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {displayList.map((project, idx) => (
+          {filtered.map((project, idx) => (
             <Reveal key={project.id} direction="up" delay={(idx % 3) * 100}>
             <div
               onClick={() => setActiveProject(project)}
@@ -204,6 +272,21 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects }) =>
             </Reveal>
           ))}
         </div>
+
+        {filtered.length === 0 && (
+          <div className="text-center py-16">
+            <p className="text-sm font-mono text-theme-muted">
+              Aucun projet ne correspond à votre recherche.
+            </p>
+            <button
+              type="button"
+              onClick={() => { setSearch(''); setActiveCategory('Tous'); }}
+              className="mt-4 px-5 py-2 rounded-xl bg-theme-card border border-theme text-xs font-semibold text-theme-main hover:border-[#f38038] transition-colors"
+            >
+              Réinitialiser les filtres
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Project Detail Modal */}

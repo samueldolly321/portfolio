@@ -129,6 +129,17 @@ export interface ContactMessage {
   createdAt: string;
 }
 
+export interface Testimonial {
+  id: string;
+  author: string;
+  role?: string | null;
+  company?: string | null;
+  message: string;
+  rating: number;
+  sortOrder?: number;
+  isVisible?: boolean;
+}
+
 export interface DashboardData {
   counts: {
     projects: number;

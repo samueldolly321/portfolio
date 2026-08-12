@@ -6,6 +6,7 @@ import { SkillsSection } from '../sections/SkillsSection';
 import { ExperienceSection } from '../sections/ExperienceSection';
 import { EducationSection } from '../sections/EducationSection';
 import { ProjectsSection } from '../sections/ProjectsSection';
+import { TestimonialsSection } from '../sections/TestimonialsSection';
 import { ContactSection } from '../sections/ContactSection';
 import { Footer } from '../components/Footer';
 import { ScrollToTop } from '../components/ScrollToTop';
@@ -18,6 +19,7 @@ import {
   Experience,
   Education,
   Project,
+  Testimonial,
 } from '../types';
 
 export const PortfolioPage: React.FC = () => {
@@ -28,6 +30,7 @@ export const PortfolioPage: React.FC = () => {
   const [experiences, setExperiences] = useState<Experience[]>([]);
   const [education, setEducation] = useState<Education[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -41,6 +44,7 @@ export const PortfolioPage: React.FC = () => {
           expData,
           eduData,
           projData,
+          testiData,
         ] = await Promise.all([
           api.getProfile(),
           api.getHero(),
@@ -49,6 +53,7 @@ export const PortfolioPage: React.FC = () => {
           api.getExperiences(),
           api.getEducation(),
           api.getProjects(),
+          api.getTestimonials(),
         ]);
 
         setProfile(profileData);
@@ -58,6 +63,7 @@ export const PortfolioPage: React.FC = () => {
         setExperiences(expData || []);
         setEducation(eduData || []);
         setProjects(projData || []);
+        setTestimonials(testiData || []);
       } catch (err) {
         console.error('Error fetching public portfolio data:', err);
       } finally {
@@ -89,6 +95,7 @@ export const PortfolioPage: React.FC = () => {
         <ExperienceSection experiences={experiences} />
         <EducationSection education={education} />
         <ProjectsSection projects={projects} />
+        <TestimonialsSection testimonials={testimonials} />
         <ContactSection profile={profile} />
       </main>
       <Footer />

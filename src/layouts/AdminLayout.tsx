@@ -13,6 +13,7 @@ import {
   FolderCode,
   Image as ImageIcon,
   MessageSquare,
+  Quote,
   LogOut,
   ExternalLink,
   Sun,
@@ -41,6 +42,7 @@ export const AdminLayout: React.FC = () => {
     { label: 'Projets CMS', path: '/admin/projects', icon: FolderCode },
     { label: 'Médiathèque', path: '/admin/media', icon: ImageIcon },
     { label: 'Messages', path: '/admin/messages', icon: MessageSquare },
+    { label: 'Témoignages', path: '/admin/testimonials', icon: Quote },
   ];
 
   const handleLogout = () => {

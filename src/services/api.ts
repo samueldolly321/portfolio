@@ -11,6 +11,7 @@ import {
   Media,
   ContactMessage,
   DashboardData,
+  Testimonial,
 } from '../types';
 
 const API_BASE = '/api';
@@ -123,6 +124,45 @@ export const api = {
 
   deleteStatistic: async (id: string): Promise<void> => {
     const res = await fetch(`${API_BASE}/statistics/${id}`, {
+      method: 'DELETE',
+      headers: { ...getAuthHeader() },
+    });
+    await handleResponse<{ success: boolean }>(res);
+  },
+
+  // Testimonials
+  getTestimonials: async (): Promise<Testimonial[]> => {
+    const res = await fetch(`${API_BASE}/testimonials`);
+    return handleResponse<Testimonial[]>(res);
+  },
+
+  getAllTestimonials: async (): Promise<Testimonial[]> => {
+    const res = await fetch(`${API_BASE}/testimonials/all`, {
+      headers: { ...getAuthHeader() },
+    });
+    return handleResponse<Testimonial[]>(res);
+  },
+
+  createTestimonial: async (data: Partial<Testimonial>): Promise<Testimonial> => {
+    const res = await fetch(`${API_BASE}/testimonials`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeader() },
+      body: JSON.stringify(data),
+    });
+    return handleResponse<Testimonial>(res);
+  },
+
+  updateTestimonial: async (id: string, data: Partial<Testimonial>): Promise<Testimonial> => {
+    const res = await fetch(`${API_BASE}/testimonials/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeader() },
+      body: JSON.stringify(data),
+    });
+    return handleResponse<Testimonial>(res);
+  },
+
+  deleteTestimonial: async (id: string): Promise<void> => {
+    const res = await fetch(`${API_BASE}/testimonials/${id}`, {
       method: 'DELETE',
       headers: { ...getAuthHeader() },
     });
