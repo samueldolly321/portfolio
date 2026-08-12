@@ -129,6 +129,12 @@ Quand tu vois **`🚀 Server running on http://0.0.0.0:3000`**, c'est prêt.
 > Les étapes 2 à 4 ne sont à refaire que si tu changes la base. Ensuite, au quotidien,
 > **`npm run dev`** suffit pour relancer.
 
+> ℹ️ **À propos de la base de données** — Le projet utilise **SQLite**, pas PostgreSQL.
+> La base est un simple **fichier `dev.db`** créé automatiquement : **aucun serveur de
+> base à installer** (ni PostgreSQL, ni MySQL, ni XAMPP). L'étape `prisma:push` crée le
+> fichier, `db:seed` le remplit avec le contenu (défini dans `prisma/seed.ts`). Tu n'as
+> pas besoin de copier `dev.db` depuis l'USB : il se régénère à l'identique.
+
 ---
 
 ## 5. Ouvrir le site
