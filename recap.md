@@ -134,3 +134,28 @@ portfolio/
 ├── uploads/                  # Fichiers uploadés (photo, CV…)
 └── stitch/                   # Design de référence (DESIGN.md, screen.png)
 ```
+
+---
+
+## 8. Mise en ligne (Render — plan gratuit)
+
+**Repo GitHub :** https://github.com/samueldolly321/portfolio (branche `main`).
+
+**Config prête dans le repo :**
+- `render.yaml` (Blueprint) : build = `npm install && prisma generate && prisma db push && db:seed && build` ; start = `NODE_ENV=production npm run start`.
+- `server.ts` écoute sur `process.env.PORT` (imposé par Render) et `0.0.0.0`.
+- Photo (`public/samuel-andrianirina.png`) et CV (`public/cv-andrianirina-hariniaina-samuel.pdf`) **figés dans `/public`** + pointés par le seed → survivent aux redéploiements.
+
+**Déployer :**
+1. https://dashboard.render.com → se connecter avec GitHub.
+2. **New → Blueprint** → sélectionner le repo `portfolio` → Render lit `render.yaml`.
+3. Renseigner `ADMIN_PASSWORD` (variable `sync:false`) → `mdpportfolio123`. `JWT_SECRET` est généré automatiquement.
+4. **Apply** → build + déploiement (~3-5 min au 1er déploiement).
+5. Site en ligne : `https://portfolio-samuel.onrender.com` ; admin : `/admin/user`.
+
+**Caractéristiques du plan gratuit :**
+- ⚠️ **Stockage éphémère** : base + uploads réinitialisés au **seed** à chaque redéploiement. Les modifs faites via l'admin **en ligne** et les messages de contact sont perdus au redéploiement. → Pour un contenu permanent, modifier `prisma/seed.ts` puis `git push`.
+- 💤 Le service **s'endort** après ~15 min d'inactivité ; réveil à froid ~30-60 s à la visite suivante.
+- 🔄 `autoDeploy: true` : chaque `git push` sur `main` redéploie automatiquement.
+
+**Passer en persistant plus tard** (si besoin) : upgrade en instance payante + disque monté (SQLite + uploads), ou bascule vers PostgreSQL (Render Postgres) + stockage objet (S3/Cloudinary) pour les fichiers.
